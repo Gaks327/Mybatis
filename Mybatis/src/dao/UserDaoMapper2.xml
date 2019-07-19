@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.UserDao2">
+	<resultMap type="bean.User" id="UserResultMap">
+		<id column="id" javaType="int" jdbcType="INTEGER" property="id"/>
+		<result column="login_name" javaType="string" jdbcType="VARCHAR" property="loginName"/>
+		<result column="username" property="username"/>
+	</resultMap>
+	
+	<sql id="user">
+	  id,login_name,username
+	</sql>
+	
+	<select id="findAll1"  resultMap="UserResultMap">
+		 select
+		 <include refid="user"/>
+		  from user
+	</select> 
+	
+ 
+ </mapper>

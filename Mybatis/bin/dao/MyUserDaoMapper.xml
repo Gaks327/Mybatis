@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.MyUserDao">
+
+<!-- 二级缓存 -->
+	<cache  eviction="FIFO" 
+			flushInterval="60000" 
+			size="10241" 
+			readOnly="true" />
+
+<!-- 查全部 -->
+	<select id="findAll111" resultType="bean.Admin">
+		select *from admin
+	</select>
+	
+<!-- 查Id	 -->
+	<select id="selectById111" parameterType="java.lang.Integer" resultType="bean.Admin">
+		select *from admin where id = #{id} 
+	</select> 
+	
+<!-- 删 -->	
+	<delete id="delete111" parameterType= "java.lang.Integer"	>
+		delete from admin where id= #{id}
+	</delete>
+	
+<!-- 用类增 -->	
+	<insert id="insert111" parameterType="bean.Admin">
+		insert into admin(id,username,password) values(#{id},#{username},#{password}),
+	</insert>
+
+<!-- 用map集合增 -->
+	<insert id="insertmap111" parameterType="map">
+		insert into admin(id,username,password) values(#{a},#{b},#{c})
+	</insert>
+
+<!-- 用list集合增 -->
+	<insert id="insertlist111" parameterType="list">
+		insert into admin(id,username,password) values(
+		<foreach collection="list" item="l" separator="," >
+			#{l}
+		</foreach>
+		)
+	</insert>
+	
+<!-- 用resultMap和片段增 -->
+	<resultMap type="bean.User" id="UserResultMap">
+		<id column="id" javaType="int" jdbcType="INTEGER" property="id"/>
+		<result column="login_name" javaType="string" jdbcType="VARCHAR" property="loginName"/>
+		<result column="username" property="username"/>
+	</resultMap>
+	<sql id="user">
+		id,login_name,username
+	</sql>
+ 	<select id="findAllAll111" resultMap="UserResultMap">
+ 		select
+ 		<include refid="user"/>
+ 		from user
+ 	</select>
+
+<!--config.xml中 表改为bank-->
+<!-- 一对一 -->
+	<resultMap type="bean.User1" id="BaseResultMap111">
+		<id column="u_id" jdbcType="INTEGER" property="uId"/>
+		<result column="u_num" jdbcType="VARCHAR" property="uNum" />
+		<result column="u_loginname" jdbcType="VARCHAR" property="uLoginname"/>
+		<result column="u_password" jdbcType="VARCHAR" property="uPassword"/>
+		<result column="u_realname" jdbcType="VARCHAR" property="uRealname"/>
+		<result column="u_idcard" jdbcType="VARCHAR" property="uIdcard"/>
+		<result column="u_sex" jdbcType="INTEGER" property="uSex"/>
+		<result column="u_birthday" jdbcType="TIMESTAMP" property="uBirthday"/>
+		<result column="u_phone" jdbcType="VARCHAR" property="uRoleid"/>
+		<result column="u_roleid" jdbcType="INTEGER" property="uRoleid"/>
+		<result column="u_deptname" jdbcType="VARCHAR" property="uDeptname"/>
+		<result column="u_state" jdbcType="INTEGER" property="uState"/>
+		<result column="u_createtime" jdbcType="TIMESTAMP" property="uCreatetime" />
+		<result column="u_updatetime" jdbcType="TIMESTAMP" property="uUpdatetime"/>
+		<result column="u_handlepwd" jdbcType="VARCHAR" property="uHandlepwd"/>
+		<result	column="u_logintime" jdbcType="TIMESTAMP" property="uLoginadress"/>
+		<result column="u_isdel" jdbcType="INTEGER" property="uIsdel"/> 
+		<association property="role" javaType="bean.Role">
+			<id column="r_id" jdbcType="INTEGER" property="rId" />
+			<result column="r_name" jdbcType="VARCHAR" property="rName" />
+			<result column="r_state" jdbcType="VARCHAR" property="rState" />
+			<result column="r_isdel" jdbcType="INTEGER" property="rIsdel"/>
+			<result column="r_createtime" jdbcType="TIMESTAMP" property="rCreatetime" />
+		</association>
+	</resultMap>
+	<select id="select111" resultMap="BaseResultMap111" >
+		select *from user u,role r where u.u_roleid = r.r_id
+	</select>
+	
+<!-- 一对多 -->
+	<resultMap type="bean.Role" id="RoleResultMap111">
+		<id	column="r_id" jdbcType="INTEGER" property="rId"/>
+		<result column="r_name" jdbcType="VARCHAR" property="rName" />	
+		<result column="r_state" jdbcType="VARCHAR" property="rState" />	
+		<result column="r_isdel" jdbcType="INTEGER" property="rIsdel" />	
+		<result column="r_createtime" jdbcType="TIMESTAMP" property="rCreatetime" />	
+		<collection property="jurisdietions" ofType="bean.Jurisdietion">
+			<id column="j_id" jdbcType="INTEGER" property="jId" />
+			<result column="j_name" jdbcType="VARCHAR" property="jName"/>
+			<result column="j_state" jdbcType="INTEGER" property="jState"/>
+			<result column="j_isdel" jdbcType="INTEGER" property="jIsdel" />
+			<result column="j_createtime" jdbcType="TIMESTAMP" property="jCreatetime" />
+			<result column="j_url" jdbcType="VARCHAR" property="jUrl"/>
+		</collection>
+	</resultMap>
+	<select id="selectRole111" resultMap="RoleResultMap111">
+		select *from role r,roleorjur rj,jurisdietion jur where r.r_id=rj.r_id and rj.j_id=jur.j_id
+	</select>
+	
+<!-- 一对多对多	 -->
+	<resultMap type="bean.User1" id="UserResultMap111">
+		<id column="u_id" jdbcType="INTEGER" property="uId"/>
+		<result column="u_num" jdbcType="VARCHAR" property="uNum" />
+		<result column="u_loginname" jdbcType="VARCHAR" property="uLoginname"/>
+		<result column="u_password" jdbcType="VARCHAR" property="uPassword"/>
+		<result column="u_realname" jdbcType="VARCHAR" property="uRealname"/>
+		<result column="u_idcard" jdbcType="VARCHAR" property="uIdcard"/>
+		<result column="u_sex" jdbcType="INTEGER" property="uSex"/>
+		<result column="u_birthday" jdbcType="TIMESTAMP" property="uBirthday"/>
+		<result column="u_phone" jdbcType="VARCHAR" property="uRoleid"/>
+		<result column="u_roleid" jdbcType="INTEGER" property="uRoleid"/>
+		<result column="u_deptname" jdbcType="VARCHAR" property="uDeptname"/>
+		<result column="u_state" jdbcType="INTEGER" property="uState"/>
+		<result column="u_createtime" jdbcType="TIMESTAMP" property="uCreatetime" />
+		<result column="u_updatetime" jdbcType="TIMESTAMP" property="uUpdatetime"/>
+		<result column="u_handlepwd" jdbcType="VARCHAR" property="uHandlepwd"/>
+		<result	column="u_logintime" jdbcType="TIMESTAMP" property="uLoginadress"/>
+		<result column="u_isdel" jdbcType="INTEGER" property="uIsdel"/> 
+		<association property="role" javaType="bean.Role">
+			<id column="r_id" jdbcType="INTEGER" property="rId" />
+			<result column="r_name" jdbcType="VARCHAR" property="rName" />
+			<result column="r_state" jdbcType="VARCHAR" property="rState" />
+			<result column="r_isdel" jdbcType="INTEGER" property="rIsdel"/>
+			<result column="r_createtime" jdbcType="TIMESTAMP" property="rCreatetime" />
+			<collection property="jurisdietions" ofType="bean.Jurisdietion">
+				<id column="j_id" jdbcType="INTEGER" property="jId" />
+				<result column="j_name" jdbcType="VARCHAR" property="jName"/>
+				<result column="j_state" jdbcType="INTEGER" property="jState"/>
+				<result column="j_isdel" jdbcType="INTEGER" property="jIsdel" />
+				<result column="j_createtime" jdbcType="TIMESTAMP" property="jCreatetime" />
+				<result column="j_url" jdbcType="VARCHAR" property="jUrl"/>
+			</collection>
+		</association>
+	</resultMap>
+	<select id="selectUser111" resultMap="UserResultMap111">
+		select *from user u,role r,roleorjur rj,jurisdietion jur where r.r_id=rj.r_id and rj.j_id=jur.j_id and u.u_roleid=r.r_id
+	</select>	
+
+<!--config.xml中 表改为message-->	
+<!-- 七表联查 -->
+	<resultMap id="BaseResultMap" type="bean.SampleInfo">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="sample_id" jdbcType="VARCHAR"
+			property="sampleId" />
+		<result column="crop_category_id" jdbcType="INTEGER"
+			property="cropCategoryId"/>
+		<result column="breed" jdbcType="INTEGER" property="breed" />
+		<result column="province" jdbcType="VARCHAR"
+			property="province" />
+		<result column="city" jdbcType="VARCHAR" property="city" />
+		<result column="county" jdbcType="VARCHAR" property="county" />
+		<result column="township" jdbcType="VARCHAR"
+			property="township" />
+		<result column="village" jdbcType="VARCHAR" property="village" />
+		<result column="household" jdbcType="VARCHAR"
+			property="household" />
+		<result column="harvest_time" jdbcType="TIMESTAMP"
+			property="harvestTime" />
+		<result column="sampling_time" jdbcType="TIMESTAMP"
+			property="samplingTime" />
+		<result column="sampling_people" jdbcType="VARCHAR"
+			property="samplingPeople" />
+		<result column="pollution_rate" jdbcType="REAL"
+			property="pollutionRate" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="isdel" jdbcType="INTEGER" property="isdel" />
+		<result column="input_time" jdbcType="TIMESTAMP"
+			property="inputTime" />
+		<result column="flag" jdbcType="INTEGER" property="flag" />
+		<result column="enterpeople" jdbcType="INTEGER"
+			property="enterpeople" />
+		<result column="varieties" jdbcType="VARCHAR"
+			property="varieties" />
+		<result column="seasonal" jdbcType="LONGVARCHAR"
+			property="seasonal" />
+		<result column="description" jdbcType="LONGVARCHAR"
+			property="description" />
+		<association property="addressProvince"
+			javaType="bean.AddressProvince">
+			<result column="code_province" jdbcType="CHAR"
+				property="codeProvince" />
+			<result column="name_province" jdbcType="VARCHAR"
+				property="nameProvince" />
+			<result column="chinaname" jdbcType="VARCHAR"
+				property="chinaname" />
+		</association>
+		<association property="addressCity"
+			javaType="bean.AddressCity">
+			<result column="code_city" jdbcType="CHAR" property="codeCity" />
+			<result column="name_city" jdbcType="VARCHAR"
+				property="nameCity" />
+			<result column="provinceCode" jdbcType="CHAR"
+				property="provincecode" />
+		</association>
+		<association property="addressTown"
+			javaType="bean.AddressTown">
+			<result column="code_town" jdbcType="CHAR" property="codeTown" />
+			<result column="name_town" jdbcType="VARCHAR"
+				property="nameTown" />
+			<result column="cityCode" jdbcType="CHAR" property="citycode" />
+		</association>
+		<association property="cropSpecies"
+			javaType="bean.CropSpecies">
+			<result column="crop_species" jdbcType="VARCHAR"
+				property="cropSpecies" />
+			<result column="crop_category_id" jdbcType="INTEGER"
+				property="cropCategoryId" />
+			<result column="state" jdbcType="INTEGER" property="state" />
+		</association>
+		<collection property="sampleToxins"
+			ofType="bean.SampleToxin">
+			<result column="toxin_id" jdbcType="INTEGER"
+				property="toxinId" />
+			<result column="toxin_count" jdbcType="REAL"
+				property="toxinCount" />
+			<result column="sample_info_id" jdbcType="INTEGER"
+				property="sampleInfoId" />
+			<association property="info"
+			
+				javaType="bean.SampleToxinInfo">
+				<id column="id" jdbcType="INTEGER" property="id" />
+				<result column="toxin_type" jdbcType="VARCHAR"
+					property="toxinType" />
+				<result column="state" jdbcType="INTEGER" property="state" />
+			</association>
+		</collection>
+	</resultMap>
+	<!--									七表联查
+		SELECT si.id ,si.sample_id,si.pollution_rate,si.harvest_time,si.sampling_time,sp.name_province,ac.name_city,at.name_town,sti.toxin_type,cs.crop_species 
+		FROM sample_info si,sample_toxin st,sample_toxin_info sti ,address_city ac,address_town 
+		at,address_province sp,crop_species cs WHERE si.province = sp.code_province 
+		AND si.city = ac.code_city AND si.county = at.code_town AND si.breed = cs.id 
+		AND si.id = st.sample_info_id and st.toxin_id = sti.id  
+	-->
+	
+<!-- 普通查所有  ps:(xml中的所有id名都不能重复，所有的xml都共用一个config!!!)-->
+	<select id="findAll123" resultMap="BaseResultMap" >
+		select *from sample_info
+	</select>
+	
+<!-- 批量查询（in）不实用没有单个查询适用 -->
+	<select id="selectinfo123" resultMap="BaseResultMap">
+		select *from sample_info where id in
+		<foreach collection="array" close=")" open="(" item="id" separator=",">
+			#{id}
+		</foreach>
+	</select>	
+<!-- 对比单个普通查询 -->
+	<select id="selectByid123456" resultMap="BaseResultMap">
+		select *from sample_info where id = #{id}
+	</select>	
+	
+<!-- 批量增不需要resultMap!!!-->	
+<!-- 批量增-->	
+	<insert id="insertall123">
+		insert into sample_toxin values
+		<foreach collection="list" item="t" separator="," > 
+			(
+				#{t.id},#{t.toxinId},#{t.toxinCount},#{t.sampleInfoId}			
+			)
+		</foreach>
+	</insert>
+	
+<!-- 批量增 回显 --><!-- 方法一:基于mybatis -->
+	<insert id="insert123" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into
+		sample_info (id, sample_id,crop_category_id, breed,province, city, county, township, village, household,harvest_time,sampling_time, sampling_people, pollution_rate,create_time,isdel,input_time, flag, enterpeople, varieties, seasonal, description)
+		values
+		(#{id,jdbcType=INTEGER}, #{sampleId,jdbcType=VARCHAR},
+		#{cropCategoryId,jdbcType=INTEGER},#{breed,jdbcType=INTEGER},
+		#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},
+		#{county,jdbcType=VARCHAR}, #{township,jdbcType=VARCHAR},
+		#{village,jdbcType=VARCHAR},#{household,jdbcType=VARCHAR},
+		#{harvestTime,jdbcType=TIMESTAMP},#{samplingTime,jdbcType=TIMESTAMP},
+		#{samplingPeople,jdbcType=VARCHAR}, #{pollutionRate,jdbcType=REAL},
+		#{createTime,jdbcType=TIMESTAMP},#{isdel,jdbcType=INTEGER},
+		#{inputTime,jdbcType=TIMESTAMP},#{flag,jdbcType=INTEGER},
+		#{enterpeople,jdbcType=INTEGER}, #{varieties,jdbcType=VARCHAR},
+		#{seasonal,jdbcType=LONGVARCHAR},#{description,jdbcType=LONGVARCHAR})
+	</insert>
+	
+<!-- 批量增 回显 --><!-- 方法二:基于mysql -->
+	<insert id="insert123456">
+		<selectKey keyProperty="id" resultType="int">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into
+		sample_info (id, sample_id,crop_category_id, breed,province, city, county, township, village, household,harvest_time,sampling_time, sampling_people, pollution_rate,create_time,isdel,input_time, flag, enterpeople, varieties, seasonal, description)
+		values
+		(#{id,jdbcType=INTEGER}, #{sampleId,jdbcType=VARCHAR},
+		#{cropCategoryId,jdbcType=INTEGER},#{breed,jdbcType=INTEGER},
+		#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},
+		#{county,jdbcType=VARCHAR}, #{township,jdbcType=VARCHAR},
+		#{village,jdbcType=VARCHAR},#{household,jdbcType=VARCHAR},
+		#{harvestTime,jdbcType=TIMESTAMP},#{samplingTime,jdbcType=TIMESTAMP},
+		#{samplingPeople,jdbcType=VARCHAR}, #{pollutionRate,jdbcType=REAL},
+		#{createTime,jdbcType=TIMESTAMP},#{isdel,jdbcType=INTEGER},
+		#{inputTime,jdbcType=TIMESTAMP},#{flag,jdbcType=INTEGER},
+		#{enterpeople,jdbcType=INTEGER}, #{varieties,jdbcType=VARCHAR},
+		#{seasonal,jdbcType=LONGVARCHAR},#{description,jdbcType=LONGVARCHAR})
+	</insert>
+	
+	
+<!-- 二级缓存-->
+	<resultMap type="bean.SampleToxin" id="SampleToxinResultMap">
+		<id	column="id" jdbcType="INTEGER" property="id"/>
+		<result column="toxin_count" jdbcType="FLOAT" property="toxinCount"/>
+	</resultMap>
+	
+	<update id="update" >
+		UPDATE `message`.`sample_toxin` SET `toxin_count` = 30.00  WHERE `id` = #{id};
+	</update>
+	<select id="select321" resultMap="SampleToxinResultMap">
+		select *from `message`.`sample_toxin` where id = #{id} ;
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

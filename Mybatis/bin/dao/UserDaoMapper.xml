@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.UserDao">
+	<!-- <resultMap type="" id=""></resultMap> -->
+	
+	<select id="findAll"  resultType="bean.Admin">
+		 select *from admin
+	</select> 
+	
+	<select id="selectById" parameterType="java.lang.Integer" resultType="bean.Admin">
+		select *from admin where id = #{id}
+	</select>
+	
+	<delete id="delate" parameterType="java.lang.Integer"  >
+		delete from admin where id = #{id}
+	</delete>
+	
+	<insert id="insert" parameterType="bean.Admin" >
+		insert into admin(id,username,password) values(#{id},#{username},#{password})
+	</insert>
+	
+	<insert id="insert1" parameterType="map" >
+		insert into admin(id,username,password) values(#{aa},#{bb},#{cc})
+	</insert>
+	
+	<insert id="insert2" parameterType="list" >
+		insert into admin(id,username,password) values(
+	 	<foreach collection="list" item="li" separator=","> 
+			 #{li}
+	 	</foreach>
+	 	)
+	</insert>
+	
+ 
+ </mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

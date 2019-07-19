@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<!-- 分页插件 -->
+ 	<plugins>
+		 <!-- PageHelper4.1.6 --> 
+		<plugin interceptor="com.github.pagehelper.PageHelper">
+			<property name="dialect" value="mysql"/>      
+		</plugin>
+    </plugins>
+	
+	<!--1.配置连接数据库的信息  别名   pagehelper分页插件   最终mybatis-config种只有  分页插件和别名  -->
+	<environments default="development">
+		<environment id="development">
+		<transactionManager type="JDBC"/>
+			<dataSource type="POOLED">
+			<property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+			<property name="url" value="jdbc:mysql://127.0.0.1:3306/message?useUnicode=true&amp;characterEncoding=utf8&amp;autoReconnect=true&amp;useSSL=false&amp;serverTimezone=UTC"/>
+			<property name="username" value="root"/>
+			<property name="password" value="123"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 加载mapper文件 -->
+    <mappers>
+	    <mapper resource="dao/UserDaoMapper.xml"/>
+	    <mapper resource="dao/UserDaoMapper2.xml"/>
+	    <mapper resource="dao/MyUserDaoMapper.xml"/>
+	    <mapper resource="dao/UserMapper.xml"/>
+    </mappers>	
+</configuration>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserMapper">
+  <resultMap id="BaseResultMap" type="bean.User1">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="u_num" jdbcType="VARCHAR" property="uNum" />
+    <result column="u_loginname" jdbcType="VARCHAR" property="uLoginname" />
+    <result column="u_password" jdbcType="VARCHAR" property="uPassword" />
+    <result column="u_realname" jdbcType="VARCHAR" property="uRealname" />
+    <result column="u_idcard" jdbcType="VARCHAR" property="uIdcard" />
+    <result column="u_sex" jdbcType="INTEGER" property="uSex" />
+    <result column="u_birthday" jdbcType="TIMESTAMP" property="uBirthday" />
+    <result column="u_phone" jdbcType="VARCHAR" property="uPhone" />
+    <result column="u_roleid" jdbcType="INTEGER" property="uRoleid" />
+    <result column="u_deptname" jdbcType="VARCHAR" property="uDeptname" />
+    <result column="u_state" jdbcType="INTEGER" property="uState" />
+    <result column="u_createtime" jdbcType="TIMESTAMP" property="uCreatetime" />
+    <result column="u_updatetime" jdbcType="TIMESTAMP" property="uUpdatetime" />
+    <result column="u_handlepwd" jdbcType="VARCHAR" property="uHandlepwd" />
+    <result column="u_logintime" jdbcType="TIMESTAMP" property="uLogintime" />
+    <result column="u_loginadress" jdbcType="VARCHAR" property="uLoginadress" />
+    <result column="u_isdel" jdbcType="INTEGER" property="uIsdel" />
+  	<association property="role" javaType="bean.Role"  >
+	  	<id column="r_id" jdbcType="INTEGER" property="rId" />
+	    <result column="r_name" jdbcType="VARCHAR" property="rName" />
+	    <result column="r_state" jdbcType="INTEGER" property="rState" />
+	    <result column="r_isdel" jdbcType="INTEGER" property="rIsdel" />
+	    <result column="r_createtime" jdbcType="TIMESTAMP" property="rCreatetime" />
+  	
+  	</association>
+  </resultMap>
+  
+  <resultMap type="bean.Role" id="RoleResultMap">
+  		<id column="r_id" jdbcType="INTEGER" property="rId" />
+	    <result column="r_name" jdbcType="VARCHAR" property="rName" />
+	    <result column="r_state" jdbcType="INTEGER" property="rState" />
+	    <result column="r_isdel" jdbcType="INTEGER" property="rIsdel" />
+	    <result column="r_createtime" jdbcType="TIMESTAMP" property="rCreatetime" />
+	  	<collection property="jurisdietions" ofType="bean.Jurisdietion">
+		  	<id column="j_id" jdbcType="INTEGER" property="jId" />
+		    <result column="j_name" jdbcType="VARCHAR" property="jName" />
+		    <result column="j_state" jdbcType="INTEGER" property="jState" />
+		    <result column="j_isdel" jdbcType="INTEGER" property="jIsdel" />
+		    <result column="j_createtime" jdbcType="TIMESTAMP" property="jCreatetime" />
+		    <result column="j_url" jdbcType="VARCHAR" property="jUrl" />
+	  	</collection>
+  </resultMap>
+  
+  
+   <resultMap id="UserResuleMap" type="bean.User1">
+	    <id column="u_id" jdbcType="INTEGER" property="uId" />
+	    <result column="u_num" jdbcType="VARCHAR" property="uNum" />
+	    <result column="u_loginname" jdbcType="VARCHAR" property="uLoginname" />
+	    <result column="u_password" jdbcType="VARCHAR" property="uPassword" />
+	    <result column="u_realname" jdbcType="VARCHAR" property="uRealname" />
+	    <result column="u_idcard" jdbcType="VARCHAR" property="uIdcard" />
+	    <result column="u_sex" jdbcType="INTEGER" property="uSex" />
+	    <result column="u_birthday" jdbcType="TIMESTAMP" property="uBirthday" />
+	    <result column="u_phone" jdbcType="VARCHAR" property="uPhone" />
+	    <result column="u_roleid" jdbcType="INTEGER" property="uRoleid" />
+	    <result column="u_deptname" jdbcType="VARCHAR" property="uDeptname" />
+	    <result column="u_state" jdbcType="INTEGER" property="uState" />
+	    <result column="u_createtime" jdbcType="TIMESTAMP" property="uCreatetime" />
+	    <result column="u_updatetime" jdbcType="TIMESTAMP" property="uUpdatetime" />
+	    <result column="u_handlepwd" jdbcType="VARCHAR" property="uHandlepwd" />
+	    <result column="u_logintime" jdbcType="TIMESTAMP" property="uLogintime" />
+	    <result column="u_loginadress" jdbcType="VARCHAR" property="uLoginadress" />
+	    <result column="u_isdel" jdbcType="INTEGER" property="uIsdel" />
+	  	<association property="role" javaType="bean.Role"  >
+		  	<id column="r_id" jdbcType="INTEGER" property="rId" />
+		    <result column="r_name" jdbcType="VARCHAR" property="rName" />
+		    <result column="r_state" jdbcType="INTEGER" property="rState" />
+		    <result column="r_isdel" jdbcType="INTEGER" property="rIsdel" />
+		    <result column="r_createtime" jdbcType="TIMESTAMP" property="rCreatetime" />
+	  		<collection property="jurisdietions" ofType="bean.Jurisdietion">
+			  	<id column="j_id" jdbcType="INTEGER" property="jId" />
+			    <result column="j_name" jdbcType="VARCHAR" property="jName" />
+			    <result column="j_state" jdbcType="INTEGER" property="jState" />
+			    <result column="j_isdel" jdbcType="INTEGER" property="jIsdel" />
+			    <result column="j_createtime" jdbcType="TIMESTAMP" property="jCreatetime" />
+			    <result column="j_url" jdbcType="VARCHAR" property="jUrl" />
+		  	</collection>
+  		</association>
+  </resultMap>
+  
+  <select id="selectRole" resultMap="RoleResultMap">
+  select *from role r ,roleorjur rj,jurisdietion jur where r.r_id = rj.r_id and rj.j_id = jur.j_id
+  </select>
+ <select id="select" resultMap="BaseResultMap">
+  select *from user u,role r where u.u_roleid = r.r_id
+ </select>
+ 
+ <select id="selectUser" resultMap="UserResuleMap">
+  select *from user u, role r ,roleorjur rj,jurisdietion jur where r.r_id = rj.r_id and rj.j_id = jur.j_id
+ and u.u_roleid = r.r_id
+ </select>
+</mapper>
